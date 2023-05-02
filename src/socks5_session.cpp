@@ -5,6 +5,8 @@
 
 #include "socks5_proto.h"
 
+//! https://www.ietf.org/rfc/rfc1928.txt
+
 namespace hevake {
 namespace socks5 {
 
