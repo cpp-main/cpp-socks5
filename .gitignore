@@ -1,0 +1,4 @@
+*.o
+tags
+cscope.*
+/src/cpp-socks5
