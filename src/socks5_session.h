@@ -24,6 +24,12 @@ class Session {
     virtual ~Session();
 
   protected:
+    enum class State {
+      kConnected,   //!< 仅仅是连接上了
+      kAckMethod,   //!< 回复了Method
+      kEstablished, //!< 已建立
+      kTerm,        //!< 终止
+    };
     void onSrcTcpDisconnected();
     void onSrcTcpReceived(tbox::network::Buffer &buff);
 
@@ -33,6 +39,7 @@ class Session {
     Token token_;
     tbox::network::TcpConnection *src_conn_;
 
+    State state_ = State::kConnected;
     tbox::network::TcpConnection *dst_conn_ = nullptr;
 };
 

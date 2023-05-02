@@ -1,6 +1,9 @@
 #include "socks5_session.h"
+
 #include <tbox/base/defines.h>
 #include <tbox/util/string.h>
+
+#include "socks5_proto.h"
 
 namespace hevake {
 namespace socks5 {
@@ -31,6 +34,7 @@ void Session::onSrcTcpDisconnected() {
 void Session::onSrcTcpReceived(tbox::network::Buffer &buff) {
   std::string hex_str = tbox::util::string::RawDataToHexStr(buff.readableBegin(), buff.readableSize());
   LogDbg("recv: %s", hex_str.c_str());
+
   buff.hasReadAll();
 }
 
