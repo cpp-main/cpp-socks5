@@ -1,6 +1,9 @@
 TARGET:=cpp-socks5
 
-OBJECTS:=app_main.o socks5_module.o
+OBJECTS:=\
+	app_main.o \
+	socks5_module.o \
+	socks5_session.o
 
 CXXFLAGS:=-I$(HOME)/.tbox/include
 LDFLAGS:=-L$(HOME)/.tbox/lib

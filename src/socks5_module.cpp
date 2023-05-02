@@ -55,8 +55,16 @@ void Module::onCleanup() {
 }
 
 void Module::onNewConnection(tbox::network::TcpConnection *new_conn) {
-  LogInfo("got new conn from: %s", new_conn->peerAddr().toString().c_str());
-  ctx().loop()->runNext([new_conn] {delete new_conn;});
+  LogInfo("new session from: %s", new_conn->peerAddr().toString().c_str());
+  auto new_token = session_cabinet_.alloc();
+  auto new_session = new Session(ctx(), *this, new_token, new_conn);
+  session_cabinet_.update(new_token, new_session);
+}
+
+void Module::onSessionClosed(Session::Token token) {
+  LogInfo("session closed");
+  auto session = session_cabinet_.free(token);
+  ctx().loop()->runNext([session] { CHECK_DELETE_OBJ(session); });
 }
 
 }
