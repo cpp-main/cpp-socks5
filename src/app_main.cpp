@@ -6,7 +6,7 @@ namespace tbox {
 namespace main {
 
 void RegisterApps(Module &app, Context &ctx) {
-  app.add(new hevake::Socks5Module(ctx));
+  app.add(new hevake::socks5::Module(ctx));
 }
 
 std::string GetAppDescribe() {
