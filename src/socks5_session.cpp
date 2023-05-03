@@ -53,7 +53,8 @@ void Session::stop() {
     parent_.dns_request().cancel(dns_req_id_);
     dns_req_id_ = 0;
   } else if (state_ == State::kWaitConnectResult) {
-    dst_ctor_->stop();
+    if (dst_ctor_ != nullptr)
+      dst_ctor_->stop();
   }
 
   src_conn_->disconnect();
@@ -280,7 +281,7 @@ void Session::startConnect() {
 }
 
 void Session::onDstTcpConnected(tbox::network::TcpConnection *dst_conn) {
-  LogDbg("[%u] connect done", token_.id());
+  LogDbg("[%u] connect established", token_.id());
 
   auto tobe_delete = dst_ctor_;
   dst_ctor_ = nullptr;
