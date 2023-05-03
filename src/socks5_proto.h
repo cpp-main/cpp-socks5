@@ -4,6 +4,8 @@
 namespace hevake {
 namespace socks5 {
 
+#define PROTO_VER   0x05
+
 //! 方法
 enum PROTO_METHOD {
   PROTO_METHOD_NO_AUTH = 0x00,

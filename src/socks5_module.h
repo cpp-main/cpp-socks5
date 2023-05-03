@@ -6,6 +6,7 @@
 #include <tbox/base/cabinet.hpp>
 
 #include "socks5_session.h"
+#include "socks5_proto.h"
 
 namespace hevake {
 namespace socks5 {
@@ -25,11 +26,15 @@ class Module : public tbox::main::Module,
 
   protected:
     void onNewConnection(tbox::network::TcpConnection *new_conn);
-    void onSessionClosed(Session::Token token);
+
+    virtual void onSessionClosed(Session::Token token) override;
+    virtual PROTO_METHOD getMethod() const override;
+    virtual tbox::network::DnsRequest& dns_request() override;
 
   private:
     tbox::network::TcpAcceptor *tcp_acceptor_;
     tbox::cabinet::Cabinet<Session> session_cabinet_;
+    tbox::network::DnsRequest dns_request_;
 };
 
 }

@@ -11,7 +11,8 @@ namespace socks5 {
 
 Module::Module(tbox::main::Context &ctx)
   : tbox::main::Module("socks5", ctx)
-  , tcp_acceptor_(new tbox::network::TcpAcceptor(ctx.loop())) {
+  , tcp_acceptor_(new tbox::network::TcpAcceptor(ctx.loop()))
+  , dns_request_(ctx.loop()) {
 }
 
 Module::~Module() {
@@ -37,6 +38,12 @@ bool Module::onInit(const tbox::Json &js) {
 
   using namespace std::placeholders;
   tcp_acceptor_->setNewConnectionCallback(std::bind(&Module::onNewConnection, this, _1));
+
+  tbox::network::DnsRequest::IPAddressVec dns_vec = {
+    tbox::network::IPAddress::FromString("114.114.114.114"),
+    tbox::network::IPAddress::FromString("8.8.8.8")
+  };
+  dns_request_.setDnsIPAddresses(dns_vec);
 
   return true;
 }
@@ -66,6 +73,12 @@ void Module::onSessionClosed(Session::Token token) {
   auto session = session_cabinet_.free(token);
   ctx().loop()->runNext([session] { CHECK_DELETE_OBJ(session); });
 }
+
+PROTO_METHOD Module::getMethod() const {
+  return PROTO_METHOD_NO_AUTH;
+}
+
+tbox::network::DnsRequest& Module::dns_request() { return dns_request_; }
 
 }
 }

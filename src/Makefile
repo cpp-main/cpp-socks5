@@ -20,7 +20,7 @@ LIBS:=\
 	-lpthread \
 	-ldl
 
-CXXFLAGS+=-DLOG_MODULE_ID='"socks5"'
+CXXFLAGS+=-DLOG_MODULE_ID='"socks5"' -ggdb
 
 all : $(TARGET)
 
