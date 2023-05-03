@@ -20,10 +20,12 @@ LIBS:=\
 	-lpthread \
 	-ldl
 
-CXXFLAGS+=-DLOG_MODULE_ID='"socks5"' -ggdb
+CXXFLAGS+=-DLOG_MODULE_ID='"socks5"'
 
-#CXXFLAGS+=-fsanitize=address -fno-omit-frame-pointer
+#CXXFLAGS+=-ggdb -fsanitize=address -fno-omit-frame-pointer
 #LDFLAGS+=-fsanitize=address -static-libasan
+
+CXXFLAGS+=-O2
 
 all : $(TARGET)
 
