@@ -31,6 +31,8 @@ bool Module::onInit(const tbox::Json &js) {
   tbox::util::json::GetField(js, "bind", bind);
   tbox::util::json::GetField(js, "backlog", backlog);
 
+  LogInfo("bind:%s, backlog:%d", bind.c_str(), backlog);
+
   if (!tcp_acceptor_->initialize(tbox::network::SockAddr::FromString(bind), backlog)) {
     LogErr("tcp_acceptor initialize fail");
     return false;
@@ -39,6 +41,7 @@ bool Module::onInit(const tbox::Json &js) {
   using namespace std::placeholders;
   tcp_acceptor_->setNewConnectionCallback(std::bind(&Module::onNewConnection, this, _1));
 
+  // FIXME: 不应该固定死
   tbox::network::DnsRequest::IPAddressVec dns_vec = {
     tbox::network::IPAddress::FromString("114.114.114.114"),
     tbox::network::IPAddress::FromString("8.8.8.8")
