@@ -28,6 +28,7 @@ Session::Session(Context &ctx, Parent &parent,
 }
 
 Session::~Session() {
+  CHECK_DELETE_RESET_OBJ(dst_ctor_);
   CHECK_DELETE_RESET_OBJ(dst_conn_);
   CHECK_DELETE_RESET_OBJ(src_conn_);
 }
@@ -38,21 +39,23 @@ void Session::sendToSrc(const void *data_ptr, size_t data_size) {
   src_conn_->send(data_ptr, data_size);
 }
 
-void Session::disconnectWithSrc() {
-  if (state_ != State::kTerm)
-    src_conn_->disconnect();
-}
-
 void Session::endSession() {
-  LogTag();
-  disconnectWithSrc();
+  if (state_ == State::kEstablished) {
+    dst_conn_->disconnect();
+  } else if (state_ == State::kWaitDnsParseResult) {
+    parent_.dns_request().cancel(dns_req_id_);
+    dns_req_id_ = 0;
+  } else if (state_ == State::kWaitConnectResult) {
+    dst_ctor_->stop();
+  }
+
   src_conn_->disconnect();
   state_ = State::kTerm;
+
   parent_.onSessionClosed(token_);
 }
 
 void Session::onSrcTcpDisconnected() {
-  LogTag();
   endSession();
 }
 
@@ -74,7 +77,6 @@ void Session::onSrcTcpReceived(Buffer &buff) {
         break;
 
       default:
-        LogTag();
         endSession();
         return;
     }
@@ -105,13 +107,11 @@ size_t Session::handleAsMethodReq(tbox::util::Deserializer &parser) {
   for (size_t i = 0; i < nmethods; ++i) {
     uint8_t method_value;
     if (!parser.fetch(method_value)) {
-      LogTag();
       endSession();
       return 0;
     }
     PROTO_METHOD method = static_cast<PROTO_METHOD>(method_value);
     if (method == support_method) {
-      LogTag();
       sendMethodResToSrc(method);
       break;
     }
@@ -247,21 +247,30 @@ void Session::startConnect() {
 }
 
 void Session::onDstTcpConnected(tbox::network::TcpConnection *dst_conn) {
+  auto tobe_delete = dst_ctor_;
+  dst_ctor_ = nullptr;
+  ctx_.loop()->runNext([tobe_delete] { delete tobe_delete; });
+
   dst_conn_ = dst_conn;
   dst_conn_->setDisconnectedCallback(std::bind(&Session::onDstTcpDisconnected, this));
   sendCmdResToSrc(PROTO_REP_SUCCEEDED);
 
   dst_conn_->bind(src_conn_);
   src_conn_->bind(dst_conn_);
+
+  state_ = State::kEstablished;
 }
 
 void Session::onDstTcpConnectFail() {
+  auto tobe_delete = dst_ctor_;
+  dst_ctor_ = nullptr;
+  ctx_.loop()->runNext([tobe_delete] { delete tobe_delete; });
+
   sendCmdResToSrc(PROTO_REP_CONN_REFUSED);
   endSession();
 }
 
 void Session::onDstTcpDisconnected() {
-  LogTag();
   endSession();
 }
 
