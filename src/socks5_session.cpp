@@ -40,7 +40,7 @@ Session::~Session() {
 }
 
 void Session::start() {
-  LogTrace("[%u] session start", token_.id());
+  LogDbg("[%u] session start", token_.id());
   timeout_timer_->enable();
 }
 
@@ -58,14 +58,13 @@ void Session::stop() {
 
   src_conn_->disconnect();
   state_ = State::kTerm;
-  LogTrace("[%u] session stoped", token_.id());
+  LogDbg("[%u] session stoped", token_.id());
 }
 
 void Session::sendToSrc(const void *data_ptr, size_t data_size) {
-#if 0
   std::string hex_str = tbox::util::string::RawDataToHexStr(data_ptr, data_size);
   LogTrace("[%u] send: %s", token_.id(), hex_str.c_str());
-#endif
+
   src_conn_->send(data_ptr, data_size);
 }
 
@@ -75,15 +74,13 @@ void Session::endSession() {
 }
 
 void Session::onSrcTcpDisconnected() {
-  LogTrace("[%u] dst tcp disconnected", token_.id());
+  LogDbg("[%u] dst tcp disconnected", token_.id());
   endSession();
 }
 
 void Session::onSrcTcpReceived(Buffer &buff) {
-#if 0
   std::string hex_str = tbox::util::string::RawDataToHexStr(buff.readableBegin(), buff.readableSize());
   LogTrace("[%u] recv: %s", token_.id(), hex_str.c_str());
-#endif
 
   size_t read_size = 0;
 
@@ -179,13 +176,13 @@ size_t Session::handleAsCmdReq(tbox::util::Deserializer &parser) {
     uint32_t ip_value;
     parser >> ip_value;
     dst_ipv4_ = IPAddress(ip_value);
-    LogTrace("[%u] dst_ip: %s", token_.id(), dst_ipv4_.toString().c_str());
+    LogDbg("[%u] dst_ip: %s", token_.id(), dst_ipv4_.toString().c_str());
 
   } else if (atype_ == PROTO_ATYP_DOMAINNAME) {
     uint8_t str_len;
     parser >> str_len;
     dst_domainname_ = std::string(static_cast<const char*>(parser.fetchNoCopy(str_len)), str_len);
-    LogTrace("[%u] dst_domainname: %s", token_.id(), dst_domainname_.toString().c_str());
+    LogDbg("[%u] dst_domainname: %s", token_.id(), dst_domainname_.toString().c_str());
 
   } else if (atype_ == PROTO_ATYP_IPV6) {
     parser.fetch(dst_ipv6_, sizeof(dst_ipv6_));
@@ -197,7 +194,7 @@ size_t Session::handleAsCmdReq(tbox::util::Deserializer &parser) {
   }
 
   parser >> dst_port_;
-  LogTrace("[%u] dst_port:%u", token_.id(), dst_port_);
+  LogDbg("[%u] dst_port:%u", token_.id(), dst_port_);
 
   if (cmd == PROTO_CMD_CONNECT) {
     if (atype_ == PROTO_ATYP_DOMAINNAME) {
@@ -263,7 +260,7 @@ void Session::onParseDnsFinished(const DnsRequest::Result &result) {
       sendCmdResToSrc(PROTO_REP_HOST_UNREACHABLE);
     } else {
       dst_ipv4_ = a_vec.front().ip;
-      LogTrace("[%u] got ip: %s", token_.id(), dst_ipv4_.toString().c_str());
+      LogDbg("[%u] got ip: %s", token_.id(), dst_ipv4_.toString().c_str());
       startConnect();
     }
   } else {
@@ -283,7 +280,7 @@ void Session::startConnect() {
 }
 
 void Session::onDstTcpConnected(tbox::network::TcpConnection *dst_conn) {
-  LogTrace("[%u] connect done", token_.id());
+  LogDbg("[%u] connect done", token_.id());
 
   auto tobe_delete = dst_ctor_;
   dst_ctor_ = nullptr;
@@ -315,7 +312,7 @@ void Session::onDstTcpDisconnected() {
 }
 
 void Session::onTimeout() {
-  LogTrace("[%u] timeout", token_.id());
+  LogDbg("[%u] timeout", token_.id());
   endSession();
 }
 

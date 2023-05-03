@@ -72,11 +72,13 @@ void Module::onNewConnection(tbox::network::TcpConnection *new_conn) {
   auto new_token = session_cabinet_.alloc();
   auto new_session = new Session(ctx(), *this, new_token, new_conn);
   session_cabinet_.update(new_token, new_session);
+  LogDbg("session number: %u", session_cabinet_.size());
   new_session->start();
 }
 
 void Module::onSessionClosed(Session::Token token) {
   auto session = session_cabinet_.free(token);
+  LogDbg("session number: %u", session_cabinet_.size());
   ctx().loop()->runNext([session] { CHECK_DELETE_OBJ(session); });
 }
 
