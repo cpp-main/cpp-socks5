@@ -2,6 +2,7 @@
   "log":{
     "stdout":{
       "levels":{
+        "tbox.main":4,
         "socks5":6,
         "":3
       }

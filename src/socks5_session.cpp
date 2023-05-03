@@ -13,6 +13,7 @@ namespace socks5 {
 
 using namespace std::placeholders;
 using namespace tbox;
+using namespace tbox::event;
 using namespace tbox::network;
 using namespace tbox::main;
 
@@ -22,24 +23,29 @@ Session::Session(Context &ctx, Parent &parent,
   , parent_(parent)
   , token_(token)
   , src_conn_(src_conn)
+  , timeout_timer_(ctx.loop()->newTimerEvent())
 {
   src_conn_->setDisconnectedCallback(std::bind(&Session::onSrcTcpDisconnected, this));
   src_conn_->setReceiveCallback(std::bind(&Session::onSrcTcpReceived, this, _1), 0);
+
+  timeout_timer_->initialize(std::chrono::seconds(10), Event::Mode::kOneshot);
+  timeout_timer_->setCallback(std::bind(&Session::onTimeout, this));
 }
 
 Session::~Session() {
   CHECK_DELETE_RESET_OBJ(dst_ctor_);
   CHECK_DELETE_RESET_OBJ(dst_conn_);
   CHECK_DELETE_RESET_OBJ(src_conn_);
+  CHECK_DELETE_RESET_OBJ(timeout_timer_);
 }
 
-void Session::sendToSrc(const void *data_ptr, size_t data_size) {
-  std::string hex_str = tbox::util::string::RawDataToHexStr(data_ptr, data_size);
-  LogDbg("recv: %s", hex_str.c_str());
-  src_conn_->send(data_ptr, data_size);
+void Session::start() {
+  timeout_timer_->enable();
 }
 
-void Session::endSession() {
+void Session::stop() {
+  timeout_timer_->disable();
+
   if (state_ == State::kEstablished) {
     dst_conn_->disconnect();
   } else if (state_ == State::kWaitDnsParseResult) {
@@ -51,7 +57,18 @@ void Session::endSession() {
 
   src_conn_->disconnect();
   state_ = State::kTerm;
+}
 
+void Session::sendToSrc(const void *data_ptr, size_t data_size) {
+#if 0
+  std::string hex_str = tbox::util::string::RawDataToHexStr(data_ptr, data_size);
+  LogTrace("send: %s", hex_str.c_str());
+#endif
+  src_conn_->send(data_ptr, data_size);
+}
+
+void Session::endSession() {
+  stop();
   parent_.onSessionClosed(token_);
 }
 
@@ -60,8 +77,10 @@ void Session::onSrcTcpDisconnected() {
 }
 
 void Session::onSrcTcpReceived(Buffer &buff) {
+#if 0
   std::string hex_str = tbox::util::string::RawDataToHexStr(buff.readableBegin(), buff.readableSize());
-  LogDbg("recv: %s", hex_str.c_str());
+  LogTrace("recv: %s", hex_str.c_str());
+#endif
 
   size_t read_size = 0;
 
@@ -84,7 +103,6 @@ void Session::onSrcTcpReceived(Buffer &buff) {
     if (read_size == 0)
       break;
 
-    LogTrace("read_size: %u", read_size);
     buff.hasRead(read_size);
   }
 }
@@ -93,6 +111,8 @@ size_t Session::handleAsMethodReq(tbox::util::Deserializer &parser) {
   uint8_t ver, nmethods;
   if (!parser.checkSize(2))
     return 0;
+
+  timeout_timer_->disable();
 
   parser >> ver >> nmethods;
 
@@ -103,7 +123,7 @@ size_t Session::handleAsMethodReq(tbox::util::Deserializer &parser) {
   }
 
   auto support_method = parent_.getMethod();
-
+  bool is_match = false;
   for (size_t i = 0; i < nmethods; ++i) {
     uint8_t method_value;
     if (!parser.fetch(method_value)) {
@@ -113,12 +133,21 @@ size_t Session::handleAsMethodReq(tbox::util::Deserializer &parser) {
     PROTO_METHOD method = static_cast<PROTO_METHOD>(method_value);
     if (method == support_method) {
       sendMethodResToSrc(method);
+      timeout_timer_->enable();
+      is_match = true;
       break;
     }
   }
 
-  state_ = State::kWaitConnect;
-  return 2 + nmethods;
+  if (is_match) {
+    state_ = State::kWaitConnect;
+  } else {
+    LogNotice("no method match");
+    sendMethodResToSrc(PROTO_METHOD_NO_ACCEPTABLE_METHOD);
+    endSession();
+  }
+
+  return parser.pos();
 }
 
 void Session::sendMethodResToSrc(PROTO_METHOD method) {
@@ -131,6 +160,8 @@ size_t Session::handleAsCmdReq(tbox::util::Deserializer &parser) {
 
   if (!parser.checkSize(4))
     return 0;
+
+  timeout_timer_->disable();
 
   parser >> ver >> cmd >> rsv >> atype;
   if (ver != PROTO_VER) {
@@ -145,13 +176,13 @@ size_t Session::handleAsCmdReq(tbox::util::Deserializer &parser) {
     uint32_t ip_value;
     parser >> ip_value;
     dst_ipv4_ = IPAddress(ip_value);
-    LogDbg("dst_ip: %s", dst_ipv4_.toString().c_str());
+    //LogTrace("dst_ip: %s", dst_ipv4_.toString().c_str());
 
   } else if (atype_ == PROTO_ATYP_DOMAINNAME) {
     uint8_t str_len;
     parser >> str_len;
     dst_domainname_ = std::string(static_cast<const char*>(parser.fetchNoCopy(str_len)), str_len);
-    LogDbg("dst_domain_name: %s", dst_domainname_.toString().c_str());
+    //LogTrace("dst_domainname: %s", dst_domainname_.toString().c_str());
 
   } else if (atype_ == PROTO_ATYP_IPV6) {
     parser.fetch(dst_ipv6_, sizeof(dst_ipv6_));
@@ -163,7 +194,7 @@ size_t Session::handleAsCmdReq(tbox::util::Deserializer &parser) {
   }
 
   parser >> dst_port_;
-  LogTrace("dst_port:%u", dst_port_);
+  //LogTrace("dst_port:%u", dst_port_);
 
   if (cmd == PROTO_CMD_CONNECT) {
     if (atype_ == PROTO_ATYP_DOMAINNAME) {
@@ -172,7 +203,9 @@ size_t Session::handleAsCmdReq(tbox::util::Deserializer &parser) {
       startConnect();
     }
   } else if (cmd == PROTO_CMD_BIND) {
+    LogUndo();
   } else if (cmd == PROTO_CMD_UDP_ASSOCIATE) {
+    LogUndo();
   } else {
     LogNotice("unsupport cmd: %u", cmd);
     endSession();
@@ -227,7 +260,7 @@ void Session::onParseDnsFinished(const DnsRequest::Result &result) {
       sendCmdResToSrc(PROTO_REP_HOST_UNREACHABLE);
     } else {
       dst_ipv4_ = a_vec.front().ip;
-      LogTrace("got ip: %s", dst_ipv4_.toString().c_str());
+      //LogTrace("got ip: %s", dst_ipv4_.toString().c_str());
       startConnect();
     }
   } else {
@@ -271,6 +304,11 @@ void Session::onDstTcpConnectFail() {
 }
 
 void Session::onDstTcpDisconnected() {
+  endSession();
+}
+
+void Session::onTimeout() {
+  //LogTrace("timeout");
   endSession();
 }
 

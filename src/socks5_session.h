@@ -3,6 +3,7 @@
 
 #include <tbox/base/cabinet_token.h>
 #include <tbox/main/module.h>
+#include <tbox/event/timer_event.h>
 #include <tbox/network/tcp_connector.h>
 #include <tbox/network/tcp_connection.h>
 #include <tbox/network/dns_request.h>
@@ -29,6 +30,9 @@ class Session {
     explicit Session(tbox::main::Context &ctx, Parent &parent,
                      Token token, tbox::network::TcpConnection *src_conn);
     virtual ~Session();
+
+    void start();
+    void stop();
 
   protected:
     enum class State {
@@ -67,11 +71,14 @@ class Session {
     void onDstTcpConnectFail();
     void onDstTcpDisconnected();
 
+    void onTimeout();
+
   private:
     tbox::main::Context &ctx_;
     Parent &parent_;
     Token token_;
     tbox::network::TcpConnection *src_conn_;
+    tbox::event::TimerEvent *timeout_timer_;
 
     State state_ = State::kWaitMethod;
 

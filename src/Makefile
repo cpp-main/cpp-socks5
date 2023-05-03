@@ -22,6 +22,9 @@ LIBS:=\
 
 CXXFLAGS+=-DLOG_MODULE_ID='"socks5"' -ggdb
 
+#CXXFLAGS+=-fsanitize=address -fno-omit-frame-pointer
+#LDFLAGS+=-fsanitize=address -static-libasan
+
 all : $(TARGET)
 
 $(TARGET) : $(OBJECTS)

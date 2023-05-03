@@ -55,6 +55,10 @@ bool Module::onStart() {
 
 void Module::onStop() {
   tcp_acceptor_->stop();
+  session_cabinet_.foreach([](Session *session) {
+    session->stop();
+    CHECK_DELETE_OBJ(session);
+  });
 }
 
 void Module::onCleanup() {
@@ -62,14 +66,13 @@ void Module::onCleanup() {
 }
 
 void Module::onNewConnection(tbox::network::TcpConnection *new_conn) {
-  LogInfo("new session from: %s", new_conn->peerAddr().toString().c_str());
   auto new_token = session_cabinet_.alloc();
   auto new_session = new Session(ctx(), *this, new_token, new_conn);
   session_cabinet_.update(new_token, new_session);
+  new_session->start();
 }
 
 void Module::onSessionClosed(Session::Token token) {
-  LogInfo("session closed");
   auto session = session_cabinet_.free(token);
   ctx().loop()->runNext([session] { CHECK_DELETE_OBJ(session); });
 }
