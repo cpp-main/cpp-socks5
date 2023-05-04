@@ -1,4 +1,4 @@
-#include "socks5_module.h"
+#include "module.h"
 
 #include <tbox/base/log.h>
 #include <tbox/base/defines.h>

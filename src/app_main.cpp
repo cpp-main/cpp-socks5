@@ -1,6 +1,6 @@
 #include <tbox/main/main.h>
 
-#include "socks5_module.h"
+#include "socks5/module.h"
 
 namespace tbox {
 namespace main {
@@ -21,7 +21,7 @@ void GetAppVersion(int &major, int &minor, int &rev, int &build) {
   major = 0;
   minor = 0;
   rev = 2;
-  build = 8;
+  build = 9;
 }
 
 

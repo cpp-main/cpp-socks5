@@ -1,10 +1,10 @@
-#include "socks5_session.h"
+#include "session.h"
 
 #include <tbox/base/defines.h>
 #include <tbox/base/assert.h>
 #include <tbox/util/string.h>
 
-#include "socks5_proto.h"
+#include "proto.h"
 
 //! https://www.ietf.org/rfc/rfc1928.txt
 

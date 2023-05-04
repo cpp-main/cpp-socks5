@@ -5,8 +5,8 @@
 #include <tbox/network/tcp_acceptor.h>
 #include <tbox/base/cabinet.hpp>
 
-#include "socks5_session.h"
-#include "socks5_proto.h"
+#include "session.h"
+#include "proto.h"
 
 namespace hevake {
 namespace socks5 {

@@ -11,7 +11,7 @@
 #include <tbox/network/dns_request.h>
 #include <tbox/util/serializer.h>
 
-#include "socks5_proto.h"
+#include "proto.h"
 
 namespace hevake {
 namespace socks5 {
