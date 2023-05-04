@@ -92,7 +92,11 @@ void Session::onSrcTcpReceived(Buffer &buff) {
         read_size = handleAsMethodReq(parser);
         break;
 
-      case State::kWaitConnect:
+      case State::kWaitUsernamePassword:
+        read_size = handleAsUsernamePassword(parser);
+        break;
+
+      case State::kWaitConnectCmd:
         read_size = handleAsCmdReq(parser);
         break;
 
@@ -141,11 +145,16 @@ size_t Session::handleAsMethodReq(tbox::util::Deserializer &parser) {
   }
 
   if (is_match) {
-    state_ = State::kWaitConnect;
+    if (support_method == PROTO_METHOD_NO_AUTH)
+      state_ = State::kWaitConnectCmd;
+    else if (support_method == PROTO_METHOD_USERNAME_PASSWORD)
+      state_ = State::kWaitUsernamePassword;
+
   } else {
     LogNotice("[%u] no method match", token_.id());
     sendMethodResToSrc(PROTO_METHOD_NO_ACCEPTABLE_METHOD);
     endSession();
+    return 0;
   }
 
   return parser.pos();
@@ -153,6 +162,49 @@ size_t Session::handleAsMethodReq(tbox::util::Deserializer &parser) {
 
 void Session::sendMethodResToSrc(PROTO_METHOD method) {
   uint8_t buffer[2] = { 0x05, method };
+  sendToSrc(buffer, sizeof(buffer));
+}
+
+size_t Session::handleAsUsernamePassword(tbox::util::Deserializer &parser) {
+  uint8_t ver = 0;
+  uint8_t ulen = 0;
+
+  timeout_timer_->disable();
+
+  if (!parser.checkSize(2))
+    return 0;
+
+  parser >> ver >> ulen;
+  if (ver != 0x01) {
+    LogNotice("[%u] ver mismatch", token_.id());
+    endSession();
+    return 0;
+  }
+
+  std::string username(static_cast<const char*>(parser.fetchNoCopy(ulen)), ulen);
+  uint8_t plen = 0;
+  parser >> plen;
+  std::string password(static_cast<const char*>(parser.fetchNoCopy(plen)), plen);
+
+  LogTrace("[%u] username: %s, password: %s", username.c_str(), password.c_str());
+
+  if (username != parent_.getUsername() ||
+      password != parent_.getPassword()) {
+    LogNotice("[%u] auth not pass", token_.id());
+    sendUsernamePasswordResToSrc(0x01);
+    endSession();
+    return 0;
+  }
+
+  sendUsernamePasswordResToSrc(0x00);
+  state_ = State::kWaitConnectCmd;
+  timeout_timer_->enable();
+
+  return parser.pos();
+}
+
+void Session::sendUsernamePasswordResToSrc(uint8_t result) {
+  uint8_t buffer[2] = { 0x01, result };
   sendToSrc(buffer, sizeof(buffer));
 }
 

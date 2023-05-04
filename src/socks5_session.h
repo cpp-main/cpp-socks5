@@ -37,13 +37,15 @@ class Session {
     void stop();
 
   protected:
+    //! 状态
     enum class State {
-      kWaitMethod,  //!< 等待Method
-      kWaitConnect, //!< 回复了Method
-      kWaitDnsParseResult,
-      kWaitConnectResult,
-      kEstablished, //!< 已建立
-      kTerm,        //!< 终止
+      kWaitMethod,            //!< 等待Method
+      kWaitUsernamePassword,  //! 等待Username与Password
+      kWaitConnectCmd,        //!< 等待Connect命令
+      kWaitDnsParseResult,    //!< 等待DNS解析结果
+      kWaitConnectResult,     //!< 等待TCP连接结果
+      kEstablished,           //!< 已建立
+      kTerm,                  //!< 终止
     };
 
     void sendToSrc(const void *data_ptr, size_t data_size);
@@ -55,6 +57,9 @@ class Session {
 
     size_t handleAsMethodReq(tbox::util::Deserializer &parser);
     void sendMethodResToSrc(PROTO_METHOD method);
+
+    size_t handleAsUsernamePassword(tbox::util::Deserializer &parser);
+    void sendUsernamePasswordResToSrc(uint8_t result);
 
     size_t handleAsCmdReq(tbox::util::Deserializer &parser);
 
