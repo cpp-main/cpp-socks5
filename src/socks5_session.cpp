@@ -127,8 +127,9 @@ size_t Session::handleAsMethodReq(tbox::util::Deserializer &parser) {
     return 0;
   }
 
-  auto support_method = parent_.getMethod();
-  bool is_match = false;
+  auto &methods = parent_.getMethods();
+  PROTO_METHOD select_method = PROTO_METHOD_NO_ACCEPTABLE_METHOD;
+
   for (size_t i = 0; i < nmethods; ++i) {
     uint8_t method_value;
     if (!parser.fetch(method_value)) {
@@ -136,19 +137,19 @@ size_t Session::handleAsMethodReq(tbox::util::Deserializer &parser) {
       return 0;
     }
     PROTO_METHOD method = static_cast<PROTO_METHOD>(method_value);
-    if (method == support_method) {
+    if (methods.find(method) != methods.end()) {
       sendMethodResToSrc(method);
       timeout_timer_->enable();
-      is_match = true;
+      select_method = method;
       break;
     }
   }
 
-  if (is_match) {
-    if (support_method == PROTO_METHOD_NO_AUTH)
-      state_ = State::kWaitConnectCmd;
-    else if (support_method == PROTO_METHOD_USERNAME_PASSWORD)
-      state_ = State::kWaitUsernamePassword;
+  if (select_method == PROTO_METHOD_NO_AUTH) {
+    state_ = State::kWaitConnectCmd;
+
+  } else if (select_method == PROTO_METHOD_USERNAME_PASSWORD) {
+    state_ = State::kWaitUsernamePassword;
 
   } else {
     LogNotice("[%u] no method match", token_.id());
@@ -185,8 +186,6 @@ size_t Session::handleAsUsernamePassword(tbox::util::Deserializer &parser) {
   uint8_t plen = 0;
   parser >> plen;
   std::string password(static_cast<const char*>(parser.fetchNoCopy(plen)), plen);
-
-  LogTrace("[%u] username: %s, password: %s", username.c_str(), password.c_str());
 
   if (username != parent_.getUsername() ||
       password != parent_.getPassword()) {

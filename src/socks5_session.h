@@ -1,6 +1,8 @@
 #ifndef HEVAKE_SOCKS5_SESSION_H
 #define HEVAKE_SOCKS5_SESSION_H
 
+#include <set>
+
 #include <tbox/base/cabinet_token.h>
 #include <tbox/main/module.h>
 #include <tbox/event/timer_event.h>
@@ -23,7 +25,7 @@ class Session {
       public:
         virtual tbox::network::DnsRequest& dns_request() = 0;
         virtual void onSessionClosed(Token) = 0;
-        virtual PROTO_METHOD getMethod() const = 0;
+        virtual const std::set<PROTO_METHOD>& getMethods() const = 0;
         virtual std::string getUsername() const = 0;
         virtual std::string getPassword() const = 0;
     };

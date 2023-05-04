@@ -48,6 +48,14 @@ bool Module::onInit(const tbox::Json &js) {
   };
   dns_request_.setDnsIPAddresses(dns_vec);
 
+  if (tbox::util::json::GetField(js, "username", username_) &&
+      tbox::util::json::GetField(js, "password", password_)) {
+    method_set_.insert(PROTO_METHOD_USERNAME_PASSWORD);
+  }
+
+  if (method_set_.empty())
+    method_set_.insert(PROTO_METHOD_NO_AUTH);
+
   return true;
 }
 
@@ -80,21 +88,6 @@ void Module::onSessionClosed(Session::Token token) {
   auto session = session_cabinet_.free(token);
   LogDbg("session number: %u", session_cabinet_.size());
   ctx().loop()->runNext([session] { CHECK_DELETE_OBJ(session); });
-}
-
-tbox::network::DnsRequest& Module::dns_request() { return dns_request_; }
-
-PROTO_METHOD Module::getMethod() const {
-  //return PROTO_METHOD_NO_AUTH;
-  return PROTO_METHOD_USERNAME_PASSWORD;
-}
-
-std::string Module::getUsername() const {
-  return "username";
-}
-
-std::string Module::getPassword() const {
-  return "password";
 }
 
 }
