@@ -82,11 +82,20 @@ void Module::onSessionClosed(Session::Token token) {
   ctx().loop()->runNext([session] { CHECK_DELETE_OBJ(session); });
 }
 
+tbox::network::DnsRequest& Module::dns_request() { return dns_request_; }
+
 PROTO_METHOD Module::getMethod() const {
-  return PROTO_METHOD_NO_AUTH;
+  //return PROTO_METHOD_NO_AUTH;
+  return PROTO_METHOD_USERNAME_PASSWORD;
 }
 
-tbox::network::DnsRequest& Module::dns_request() { return dns_request_; }
+std::string Module::getUsername() const {
+  return "username";
+}
+
+std::string Module::getPassword() const {
+  return "password";
+}
 
 }
 }

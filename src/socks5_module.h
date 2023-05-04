@@ -28,8 +28,11 @@ class Module : public tbox::main::Module,
     void onNewConnection(tbox::network::TcpConnection *new_conn);
 
     virtual void onSessionClosed(Session::Token token) override;
-    virtual PROTO_METHOD getMethod() const override;
     virtual tbox::network::DnsRequest& dns_request() override;
+
+    virtual PROTO_METHOD getMethod() const override;
+    virtual std::string getUsername() const override;
+    virtual std::string getPassword() const override;
 
   private:
     tbox::network::TcpAcceptor *tcp_acceptor_;

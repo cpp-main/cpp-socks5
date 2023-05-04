@@ -24,6 +24,8 @@ class Session {
         virtual tbox::network::DnsRequest& dns_request() = 0;
         virtual void onSessionClosed(Token) = 0;
         virtual PROTO_METHOD getMethod() const = 0;
+        virtual std::string getUsername() const = 0;
+        virtual std::string getPassword() const = 0;
     };
 
   public:
