@@ -10,6 +10,7 @@
 ## 功能
 
 - 支持 "No Auth" 验证；
+- 支持 "Username/Passowrd" 验证；
 - 支持 CONNECT 命令；
 - 支持 IPv4；
 
