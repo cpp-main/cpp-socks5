@@ -42,12 +42,12 @@ make
 ```
 带参数的运行：
 ```
-./cpp-socks5 -c config/default.json
+./cpp-socks5 -c config/default.conf
 ```
 
 
 ## 配置说明
-你可以在 src/config.json 的基础上修改配置。  
+你可以在 src/config/full.conf 的基础上修改配置。  
 ```
 {
   "socks5": {
@@ -66,12 +66,12 @@ Issue: 任何问题都欢迎在issue里交流
 QQ群: 738084942 (cpp-tbox 技术交流)
 
 ## 鼓励我
-如果你觉得很有用，请您给我更多的鼓励。
+如果你觉得很有用，请您给我更多的鼓励。  
 你可以做这些：
 
+- 关注 [cpp-tbox](https://gitee.com/cpp-master/cpp-tbox) 开源项目；
 - 给它点亮三连： Star, Watch, Fork；
 - 向身边的同事与伙伴推荐，在技术论坛向您的读者推荐；
 - 加入上面的QQ群、加我微信进入微信群；
 - 积极反馈问题，提出建议；
-- 参与项目的开发，贡献您的力量；
-- 关注 [cpp-tbox](https://gitee.com/cpp-master/cpp-tbox) 项目。
+- 参与项目的开发，贡献您的力量。
