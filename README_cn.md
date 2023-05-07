@@ -36,7 +36,26 @@ make
 ```
 
 ## 运行
+默认参数运行：
+```
+./cpp-socks5
+```
+带参数的运行：
+```
+./cpp-socks5 -c config/default.json
+```
 
+
+## 配置说明
+你可以在 src/config.json 的基础上修改配置。  
 ```
-./cpp-socks5 -c config.json
+{
+  "socks5": {
+    "bind":"0.0.0.0:1080", // 服务绑定地址与端口，不指定，默认为"0.0.0.0:1080"
+    "backlog":20,          // listen(backlog) 参数，默认为20
+    "username":"abc",      // Username
+    "password":"123",      // Password
+  }
+}
 ```
+如果同时指定了 username 与 password，则会开启 Username/Password 验证，否则默认为 No Auth 验证。
