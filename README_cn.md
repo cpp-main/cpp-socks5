@@ -61,9 +61,9 @@ make
 如果同时指定了 username 与 password，则会开启 Username/Password 验证，否则默认为 No Auth 验证。
 
 ## 反馈途径
-Issue: 任何问题都欢迎在issue里交流
-微信: hevake_lee
-QQ群: 738084942 (cpp-tbox 技术交流)
+- Issue: 任何问题都欢迎在issue里交流
+- 微信: hevake_lee
+- QQ群: 738084942 (cpp-tbox 技术交流)
 
 ## 鼓励我
 如果你觉得很有用，请您给我更多的鼓励。  
