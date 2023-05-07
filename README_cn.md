@@ -5,11 +5,11 @@
 [![Platform](https://img.shields.io/badge/platform-linux-lightgrey.svg)](https://img.shields.io/badge/platform-linux-lightgrey.svg)
 
 ## 介绍
-基于 cpp-tbox 框架实现的 socks5 服务。
+基于 [cpp-tbox](https://gitee.com/cpp-master/cpp-tbox) 框架实现的 socks5 服务。
 
 ## 起源
 之前我尝试使用其它开源的socks5开源软件，但它总异常崩溃，我也懒得去帮它查bug了。  
-于是我看了一下SOCKS5的协议文档，感觉很简单，加上我手上有 cpp-tbox 成熟的架框，写这种东西轻而易举。于是蒙生出自己写一个 SOCKS5 服务程序的想法，便有了 cpp-socks5 项目。  
+于是我看了一下SOCKS5的协议文档，感觉很简单，加上我手上有 [cpp-tbox](https://gitee.com/cpp-master/cpp-tbox) 成熟的架框，写这种东西轻而易举。于是蒙生出自己写一个 SOCKS5 服务程序的想法，便有了 cpp-socks5 项目。  
 在这个程序完成之后，我对它进行了测试，连续使用它开播放1080P以上连续剧，测试了三天三夜。结果非常稳定，性能上也毫无压力。  
 
 ## 功能
@@ -20,7 +20,7 @@
 - 支持 IPv4；
 
 ## 构建
-### 步骤一：构建 cpp-tbox 项目  
+### 步骤一：构建 [cpp-tbox](https://gitee.com/cpp-master/cpp-tbox) 项目  
 ```
 git clone https://gitee.com/cpp-master/cpp-tbox.git
 cd cpp-tbox;
@@ -59,3 +59,19 @@ make
 }
 ```
 如果同时指定了 username 与 password，则会开启 Username/Password 验证，否则默认为 No Auth 验证。
+
+## 反馈途径
+Issue: 任何问题都欢迎在issue里交流
+微信: hevake_lee
+QQ群: 738084942 (cpp-tbox 技术交流)
+
+## 鼓励我
+如果你觉得很有用，请您给我更多的鼓励。
+你可以做这些：
+
+- 给它点亮三连： Star, Watch, Fork；
+- 向身边的同事与伙伴推荐，在技术论坛向您的读者推荐；
+- 加入上面的QQ群、加我微信进入微信群；
+- 积极反馈问题，提出建议；
+- 参与项目的开发，贡献您的力量；
+- 关注 [cpp-tbox](https://gitee.com/cpp-master/cpp-tbox) 项目。
