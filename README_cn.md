@@ -8,9 +8,9 @@
 基于 [cpp-tbox](https://gitee.com/cpp-master/cpp-tbox) 框架实现的 socks5 服务。
 
 ## 起源
-之前我尝试使用其它开源的socks5开源软件，但它总异常崩溃，我也懒得去帮它查bug了。  
-于是我看了一下[SOCKS5的协议文档](https://datatracker.ietf.org/doc/rfc1928/)，感觉很简单，加上我手上有 [cpp-tbox](https://gitee.com/cpp-master/cpp-tbox) 成熟的架框，写这种东西轻而易举。于是蒙生出自己写一个 SOCKS5 服务程序的想法，便有了 cpp-socks5 项目。  
-在这个程序完成之后，我对它进行了测试，连续使用它开播放1080P以上连续剧，测试了三天三夜。结果非常稳定，性能上也毫无压力。  
+之前我尝试使用其它开源的socks5开源软件，但它总异常崩溃。  
+于是我看了一下[SOCKS5的协议文档](https://datatracker.ietf.org/doc/rfc1928/)，感觉比较简单，加上我手上有 [cpp-tbox](https://gitee.com/cpp-master/cpp-tbox) 成熟的架框，写这种东西也很容易。于是蒙生出自己写一个 SOCKS5 服务程序的想法，便有了 cpp-socks5 项目。  
+在这个程序完成之后，我对它进行了测试，连续使用它一直播放1080P以上的视频，测试了三天三夜。结果非常满意，程序稳定，性能上也毫无压力。  
 
 ## 功能
 
