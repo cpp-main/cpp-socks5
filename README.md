@@ -6,26 +6,26 @@
 
 [[中文]](README_CN.md)
 
-## 介绍
-基于 [cpp-tbox](https://github.com/hevake/cpp-tbox) 框架实现的 socks5 服务。
+## About
+A socks5 proxy server base on [cpp-tbox](https://github.com/hevake/cpp-tbox)
 
-## 起源
-之前我尝试使用其它开源的socks5开源软件，但它总异常崩溃。  
-于是我看了一下[SOCKS5的协议文档](https://datatracker.ietf.org/doc/rfc1928/)，感觉比较简单，加上我手上有 [cpp-tbox](https://gitee.com/cpp-master/cpp-tbox) 成熟的架框，写这种东西也很容易。于是蒙生出自己写一个 SOCKS5 服务程序的想法，便有了 cpp-socks5 项目。  
-在这个程序完成之后，我对它进行了测试，连续使用它一直播放1080P以上的视频，测试了三天三夜，并连续运行40多天。结果非常满意，程序稳定，性能上也毫无压力。  
+## Origin
+I tried to use other open source socks5 open source software before, but it always crashed abnormally.
+So I took a look at the [SOCKS5 protocol document](https://datatracker.ietf.org/doc/rfc1928/), it feels relatively simple, and I have [cpp-tbox](https://github.com/hevake/cpp-tbox) mature framework, it is easy to write this kind of thing. So Meng gave birth to the idea of writing a SOCKS5 service program by himself, and the cpp-socks5 project came into being.
+After the program was completed, I tested it and used it continuously to play videos above 1080P for three days and three nights, and it continued to run for more than 40 days. The result is very satisfactory, the program is stable, and there is no pressure on performance. 
 
-以下为连续运行了41天后的使用效果：  
-![演示](documents/images/show.gif)
+The following is the use effect after 41 days of continuous operation:  
+![show](documents/images/show.gif)
 
-## 功能
+## Features
 
-- 支持 "No Auth" 验证；
-- 支持 "Username/Passowrd" 验证；
-- 支持 CONNECT 命令；
-- 支持 IPv4；
+- Support "No Auth" authentication;
+- Support "Username/Password" authentication;
+- Support CONNECT command;
+- Support IPv4；
 
-## 构建
-### 步骤一：构建 [cpp-tbox](https://github.com/hevake/cpp-tbox) 项目  
+## Build
+### Step 1：build [cpp-tbox](https://github.com/hevake/cpp-tbox) first  
 ```
 git clone https://gitee.com/cpp-master/cpp-tbox.git
 cd cpp-tbox;
@@ -33,50 +33,50 @@ STAGING_DIR=$HOME/.tbox make 3rd-party modules RELEASE=1
 cd -
 ```
 
-### 步骤二：构建 cpp-socks5 自身
+### Step 2：Build cpp-socks5 self
 ```
 git clone https://gitee.com/cpp-master/cpp-socks5.git
 cd cpp-socks5/src;
 make
 ```
 
-## 运行
-默认参数运行：
+## Run
+Run with default parameters：
 ```
 ./cpp-socks5
 ```
-带参数的运行：
+Run with arguments:
 ```
 ./cpp-socks5 -c config/default.conf
 ```
 
 
-## 配置说明
-你可以在 src/config/full.conf 的基础上修改配置。  
+## Configure
+You can modify the configuration based on src/config/full.conf.
 ```
 {
   "socks5": {
-    "bind":"0.0.0.0:1080", // 服务绑定地址与端口，不指定，默认为"0.0.0.0:1080"
-    "backlog":20,          // listen(backlog) 参数，默认为20
+    "bind":"0.0.0.0:1080", // Service binding address and port, if not specified, the default is "0.0.0.0:1080"
+    "backlog":20,          // listen(backlog), default is 20
     "username":"abc",      // Username
     "password":"123",      // Password
   }
 }
 ```
-如果同时指定了 username 与 password，则会开启 Username/Password 验证，否则默认为 No Auth 验证。
+If username and password are specified at the same time, Username/Password authentication will be enabled, otherwise No Auth authentication will be defaulted.
 
-## 反馈途径
-- Issue: 任何问题都欢迎在issue里交流
-- 微信: hevake_lee
-- QQ群: 738084942 (cpp-tbox 技术交流)
+## Feedback
+- Issue: Any questions are welcome to communicate in issue
+- WeChat: hevake_lee
+- QQ group: 738084942 (cpp-tbox 技术交流)
 
-## 鼓励我
-如果你觉得很有用，请您给我更多的鼓励。  
-你可以做这些：
+## Encourage me
+If you find it useful, please give me more encouragement.
+You can do these:
 
-- 关注 [cpp-tbox](https://gitee.com/cpp-master/cpp-tbox) 开源项目；
-- 给它点亮三连： Star, Watch, Fork；
-- 向身边的同事与伙伴推荐，在技术论坛向您的读者推荐；
-- 加入上面的QQ群、加我微信进入微信群；
-- 积极反馈问题，提出建议；
-- 参与项目的开发，贡献您的力量。
+- Follow [cpp-tbox](https://github.com/hevake/cpp-tbox) open source project;
+- Light up three combos for it: Star, Watch, Fork;
+- Recommend to colleagues and partners around you, and recommend to your readers in technical forums;
+- Join the above QQ group, add me on WeChat to enter the WeChat group;
+- Positive feedback on issues and suggestions;
+- Participate in the development of the project and contribute your strength.
