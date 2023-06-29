@@ -4,6 +4,8 @@
 [![Language](https://img.shields.io/badge/language-c++11-red.svg)](https://en.cppreference.com/)
 [![Platform](https://img.shields.io/badge/platform-linux-lightgrey.svg)](https://img.shields.io/badge/platform-linux-lightgrey.svg)
 
+[[English]](README.md)
+
 ## 介绍
 基于 [cpp-tbox](https://gitee.com/cpp-master/cpp-tbox) 框架实现的 socks5 服务。
 
