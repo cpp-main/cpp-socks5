@@ -7,11 +7,11 @@
 [[中文]](README_CN.md)
 
 ## About
-A socks5 proxy server base on [cpp-tbox](https://github.com/hevake/cpp-tbox)
+A socks5 proxy server base on [cpp-tbox](https://github.com/cpp-main/cpp-tbox)
 
 ## Origin
 I tried to use other open source socks5 open source software before, but it always crashed abnormally.
-So I took a look at the [SOCKS5 protocol document](https://datatracker.ietf.org/doc/rfc1928/), it feels relatively simple, and I have [cpp-tbox](https://github.com/hevake/cpp-tbox) mature framework, it is easy to write this kind of thing. So Meng gave birth to the idea of writing a SOCKS5 service program by himself, and the cpp-socks5 project came into being.
+So I took a look at the [SOCKS5 protocol document](https://datatracker.ietf.org/doc/rfc1928/), it feels relatively simple, and I have [cpp-tbox](https://github.com/cpp-main/cpp-tbox) mature framework, it is easy to write this kind of thing. So Meng gave birth to the idea of writing a SOCKS5 service program by himself, and the cpp-socks5 project came into being.
 After the program was completed, I tested it and used it continuously to play videos above 1080P for three days and three nights, and it continued to run for more than 40 days. The result is very satisfactory, the program is stable, and there is no pressure on performance. 
 
 The following is the use effect after 41 days of continuous operation:  
@@ -25,7 +25,7 @@ The following is the use effect after 41 days of continuous operation:
 - Support IPv4；
 
 ## Build
-### Step 1：build [cpp-tbox](https://github.com/hevake/cpp-tbox) first  
+### Step 1：build [cpp-tbox](https://github.com/cpp-main/cpp-tbox) first  
 ```
 git clone https://gitee.com/cpp-master/cpp-tbox.git
 cd cpp-tbox;
@@ -70,11 +70,11 @@ If username and password are specified at the same time, Username/Password authe
 - WeChat: hevake_lee
 - QQ group: 738084942 (cpp-tbox 技术交流)
 
-## Encourage me
+## Encourage us
 If you find it useful, please give me more encouragement.
 You can do these:
 
-- Follow [cpp-tbox](https://github.com/hevake/cpp-tbox) open source project;
+- Follow [cpp-tbox](https://github.com/cpp-main/cpp-tbox) open source project;
 - Light up three combos for it: Star, Watch, Fork;
 - Recommend to colleagues and partners around you, and recommend to your readers in technical forums;
 - Join the above QQ group, add me on WeChat to enter the WeChat group;
