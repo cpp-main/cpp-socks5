@@ -1,12 +1,12 @@
 #include <tbox/main/main.h>
 
-#include "socks5/module.h"
+#include "socks5/create.h"
 
 namespace tbox {
 namespace main {
 
 void RegisterApps(Module &app, Context &ctx) {
-  app.add(new hevake::socks5::Module(ctx));
+  app.add(hevake::socks5::Create(ctx));
 }
 
 std::string GetAppDescribe() {
@@ -20,8 +20,8 @@ std::string GetAppBuildTime() {
 void GetAppVersion(int &major, int &minor, int &rev, int &build) {
   major = 0;
   minor = 0;
-  rev = 2;
-  build = 9;
+  rev = 3;
+  build = 10;
 }
 
 

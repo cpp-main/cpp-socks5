@@ -2,3 +2,4 @@
 tags
 cscope.*
 /src/cpp-socks5
+lib*

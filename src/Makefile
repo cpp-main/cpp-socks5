@@ -1,14 +1,15 @@
-TARGET:=cpp-socks5
+.PHONY: clean distclean
 
-OBJECTS:=\
-	app_main.o \
-	socks5/module.o \
-	socks5/session.o
+CXX = g++
 
-CXXFLAGS:=-I$(HOME)/.tbox/include
-LDFLAGS:=-L$(HOME)/.tbox/lib
+EXE = cpp-socks5
+OBJECTS = app_main.o
+SOCKS5_LIB = ./socks5/libsocks5.a
 
-LIBS:=\
+CXXFLAGS := -I$(HOME)/.tbox/include/
+LDFLAGS := -L$(HOME)/.tbox/lib/
+
+LIBS := \
 	-ltbox_main \
 	-ltbox_terminal \
 	-ltbox_network \
@@ -20,20 +21,17 @@ LIBS:=\
 	-lpthread \
 	-ldl
 
-CXXFLAGS+=-DLOG_MODULE_ID='"socks5"'
+all: $(EXE)
 
-#CXXFLAGS+=-ggdb -fsanitize=address -fno-omit-frame-pointer
-#LDFLAGS+=-fsanitize=address -static-libasan
+$(SOCKS5_LIB):
+	make -C socks5 libsocks5.a
 
-CXXFLAGS+=-O2
-
-all : $(TARGET)
-
-$(TARGET) : $(OBJECTS)
-	g++ -o $@ $^ $(LDFLAGS) $(LIBS) -rdynamic
+$(EXE) : $(OBJECTS) $(SOCKS5_LIB)
+	$(CXX) -o $@ $^ $(LDFLAGS) $(LIBS)
 
 clean:
 	rm -f $(OBJECTS)
 
 distclean: clean
-	rm $(TARGET)
+	make -C socks5 distclean
+	rm -f $(EXE)
