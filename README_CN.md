@@ -47,7 +47,7 @@ make
 ```
 带参数的运行：
 ```
-./cpp-socks5 -c config/default.conf
+./cpp-socks5 -c ../config/default.conf
 ```
 
 
@@ -67,7 +67,7 @@ make
 
 ## 反馈途径
 - Issue: 任何问题都欢迎在issue里交流
-- 微信: hevake_lee
+- 微信: hevake\_lee
 - QQ群: 738084942 (cpp-tbox 技术交流)
 
 ## 鼓励我们

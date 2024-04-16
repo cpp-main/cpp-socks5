@@ -47,7 +47,7 @@ Run with default parameters：
 ```
 Run with arguments:
 ```
-./cpp-socks5 -c config/default.conf
+./cpp-socks5 -c ../config/default.conf
 ```
 
 
@@ -67,7 +67,7 @@ If username and password are specified at the same time, Username/Password authe
 
 ## Feedback
 - Issue: Any questions are welcome to communicate in issue
-- WeChat: hevake_lee
+- WeChat: hevake\_lee
 - QQ group: 738084942 (cpp-tbox 技术交流)
 
 ## Encourage us
