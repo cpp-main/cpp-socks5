@@ -11,11 +11,13 @@ LDFLAGS := -L$(HOME)/.tbox/lib/
 
 LIBS := \
 	-ltbox_main \
+	-ltbox_coroutine \
 	-ltbox_terminal \
 	-ltbox_network \
 	-ltbox_eventx \
 	-ltbox_event \
 	-ltbox_log \
+	-ltbox_trace \
 	-ltbox_util \
 	-ltbox_base \
 	-lpthread \
