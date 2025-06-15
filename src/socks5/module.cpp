@@ -19,7 +19,7 @@ Module::~Module() {
   CHECK_DELETE_RESET_OBJ(tcp_acceptor_);
 }
 
-void Module::onFillDefaultConfig(tbox::Json &js) {
+void Module::onFillDefaultConfig(tbox::Json &js) const {
   js["bind"] = "0.0.0.0:1080";
   js["backlog"] = 20;
 }

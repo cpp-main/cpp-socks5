@@ -19,7 +19,7 @@ std::string GetAppBuildTime() {
 
 void GetAppVersion(int &major, int &minor, int &rev, int &build) {
   major = 0;
-  minor = 0;
+  minor = 1;
   rev = 3;
   build = 10;
 }
